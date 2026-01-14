@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
+import 'package:el_caso_qr/screens/historia_detalle.dart';
+import 'package:el_caso_qr/screens/maps_screen.dart';
 
 class HistoriaScreen extends StatefulWidget {
   const HistoriaScreen({super.key});
@@ -57,7 +59,7 @@ class _HistoriaScreenState extends State<HistoriaScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.deepPurple, Colors.purpleAccent],
+            colors: [Colors.red, Colors.black],
           ),
         ),
         child: _historia.isEmpty
@@ -89,7 +91,7 @@ class _HistoriaScreenState extends State<HistoriaScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
                         gradient: const LinearGradient(
-                          colors: [Colors.white, Color(0xFFFAFAFA)],
+                          colors: [Colors.black, Color(0xFF333333)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -101,14 +103,14 @@ class _HistoriaScreenState extends State<HistoriaScreen> {
                           children: [
                             Row(
                               children: [
-                                const Icon(Icons.book, color: Colors.deepPurple),
+                                const Icon(Icons.book, color: Colors.white),
                                 const SizedBox(width: 8),
                                 Text(
                                   parte['titulo'] ?? 'Parte ${index + 1}',
                                   style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.deepPurple,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ],
@@ -117,19 +119,19 @@ class _HistoriaScreenState extends State<HistoriaScreen> {
                             if (parte['texto1'] != null) ...[
                               Row(
                                 children: [
-                                  const Icon(Icons.text_fields, color: Colors.blue),
+                                  const Icon(Icons.text_fields, color: Colors.white),
                                   const SizedBox(width: 8),
-                                  const Text('Texto 1:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+                                  const Text('Texto 1:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
                                 ],
                               ),
                               const SizedBox(height: 4),
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Colors.blue.shade50,
+                                  color: Colors.red.shade900,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Text(parte['texto1'], style: const TextStyle(fontSize: 16)),
+                                child: Text(parte['texto1'], style: const TextStyle(fontSize: 16, color: Colors.white)),
                               ),
                               const SizedBox(height: 12),
                             ],
@@ -138,58 +140,61 @@ class _HistoriaScreenState extends State<HistoriaScreen> {
                                 children: [
                                   const Icon(Icons.text_fields, color: Colors.green),
                                   const SizedBox(width: 8),
-                                  const Text('Texto 2:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+                                  const Text('Texto 2:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
                                 ],
                               ),
                               const SizedBox(height: 4),
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Colors.green.shade50,
+                                  color: Colors.red.shade900,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Text(parte['texto2'], style: const TextStyle(fontSize: 16)),
+                                child: Text(parte['texto2'], style: const TextStyle(fontSize: 16, color: Colors.white)),
                               ),
                               const SizedBox(height: 12),
                             ],
                             if (parte['coordenadas'] != null) ...[
-                              Row(
-                                children: [
-                                  const Icon(Icons.location_on, color: Colors.red),
-                                  const SizedBox(width: 8),
-                                  const Text('Coordenadas:', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: Colors.red.shade50,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  'Lat: ${parte['coordenadas']['lat']}, Lng: ${parte['coordenadas']['lng']}',
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ),
-                              const SizedBox(height: 12),
+                              // Botón Ver en Mapa
                               Center(
                                 child: ElevatedButton.icon(
-                                  onPressed: () async {
-                                    String lat = parte['coordenadas']['lat'];
-                                    String lng = parte['coordenadas']['lng'];
-                                    await Clipboard.setData(ClipboardData(text: '$lat,$lng'));
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Coordenadas copiadas al portapapeles'),
-                                        backgroundColor: Colors.green,
+                                  onPressed: () {
+                                    double lat = double.parse(parte['coordenadas']['lat'].toString());
+                                    double lng = double.parse(parte['coordenadas']['lng'].toString());
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MapsScreen(initialLat: lat, initialLng: lng),
                                       ),
                                     );
                                   },
-                                  icon: const Icon(Icons.copy),
-                                  label: const Text('Copiar Coordenadas'),
+                                  icon: const Icon(Icons.map),
+                                  label: const Text('Ver en Mapa'),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.deepPurple,
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              // Botón Ver Historia
+                              Center(
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => HistoriaDetalleScreen(parte: parte),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.visibility),
+                                  label: const Text('Ver Historia'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
                                     foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
@@ -208,4 +213,18 @@ class _HistoriaScreenState extends State<HistoriaScreen> {
       ),
     );
   }
+}
+
+// Función para agregar una nueva parte a la historia
+Future<void> addToHistoria(Map<String, dynamic> nuevaParte) async {
+  final prefs = await SharedPreferences.getInstance();
+  final historiaJson = prefs.getStringList('historia') ?? [];
+  final historia = historiaJson.map((json) => jsonDecode(json) as Map<String, dynamic>).toList();
+
+  // Agregar título como "Parte X"
+  nuevaParte['titulo'] = 'Parte ${historia.length + 1}';
+
+  historia.add(nuevaParte);
+  final nuevaHistoriaJson = historia.map((parte) => jsonEncode(parte)).toList();
+  await prefs.setStringList('historia', nuevaHistoriaJson);
 }

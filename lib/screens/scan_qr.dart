@@ -29,6 +29,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
     final Barcode? barcode = barcodes.firstOrNull;
 
     if (barcode != null && barcode.rawValue != null && _isScanning) {
+      print('Código QR escaneado: ${barcode.rawValue}');
       setState(() {
         _isScanning = false;
         _scanResult = barcode.rawValue!;
@@ -99,51 +100,18 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () async {
-                String textToCopy = result;
-                await Clipboard.setData(ClipboardData(text: textToCopy));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Texto copiado al portapapeles'),
-                    backgroundColor: Colors.blue,
-                  ),
-                );
-              },
-              child: const Text('Copiar Texto'),
-            ),
-            if (parsedJson != null && parsedJson['coordenadas'] != null)
-              TextButton(
-                onPressed: () async {
-                  String lat = parsedJson?['coordenadas']['lat'];
-                  String lng = parsedJson?['coordenadas']['lng'];
-                  String coordText = '$lat,$lng';
-                  await Clipboard.setData(ClipboardData(text: coordText));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Coordenadas copiadas al portapapeles'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                },
-                child: const Text('Copiar Coordenadas'),
-              ),
-            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                // Reiniciar escaneo
-                setState(() {
-                  _isScanning = true;
-                  _scanResult = null;
-                });
-              },
-              child: const Text('Escanear Otro'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop(result); // Regresar con el resultado
+                Navigator.of(context).pushNamed('/');
               },
               child: const Text('Aceptar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed('/historia');
+              },
+              child: const Text('Ir a Historia'),
             ),
           ],
         );
@@ -156,7 +124,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Escanear Código QR'),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.red,
         actions: [
           IconButton(
             icon: Icon(

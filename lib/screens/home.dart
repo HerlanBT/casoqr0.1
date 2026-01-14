@@ -13,14 +13,14 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home Screen'),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.red,
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.deepPurple, Colors.purpleAccent],
+            colors: [Colors.red, Colors.black],
           ),
         ),
         child: Column(
@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.palette),
               label: const Text('Go to RGB Screen'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.cyan,
+                backgroundColor: Colors.red,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                 shape: RoundedRectangleBorder(
